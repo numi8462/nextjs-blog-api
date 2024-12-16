@@ -38,7 +38,7 @@ export const POST = async (req) => {
     response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io');
     response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    response.headers.set('Access-Control-Allow-Credentials', 'true'); // Add this line
+    response.headers.set('Access-Control-Allow-Credentials', 'true'); 
 
     return response;
 };
@@ -50,7 +50,15 @@ export const OPTIONS = () => {
             'Access-Control-Allow-Origin': 'https://numi8462.github.io',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Credentials': 'true', // Add this line
+            'Access-Control-Allow-Credentials': 'true',
         },
     });
+};
+
+export const GET = async (req) => { 
+    const response = await getHandler(req); 
+    response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io'); 
+    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS'); 
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type'); 
+    response.headers.set('Access-Control-Allow-Credentials', 'true'); 
 };
