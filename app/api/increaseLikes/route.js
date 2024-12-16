@@ -2,6 +2,19 @@ import { Client } from '@notionhq/client';
 
 const notion = new Client({ auth: process.env.NOTION_ACCESS_TOKEN });
 
+const getHandler = async (req) => { 
+    const { id } = await req.json(); 
+
+    try { 
+        const page = await notion.pages.retrieve({ page_id: id }); 
+        const currentLikes = page.properties["숫자"]?.number || 0; 
+        return new Response(JSON.stringify({ likes: currentLikes }), { status: 200 }); 
+    } catch (error) { 
+        console.error(error); 
+        return new Response(JSON.stringify({ error: 'Failed to fetch likes' }), { status: 500 }); 
+    } 
+};
+
 const handler = async (req) => {
     const { id, action } = await req.json();
 
