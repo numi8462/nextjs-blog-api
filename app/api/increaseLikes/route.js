@@ -2,19 +2,6 @@ import { Client } from '@notionhq/client';
 
 const notion = new Client({ auth: process.env.NOTION_ACCESS_TOKEN });
 
-const getHandler = async (req) => { 
-    const { id } = await req.json(); 
-
-    try { 
-        const page = await notion.pages.retrieve({ page_id: id }); 
-        const currentLikes = page.properties["숫자"]?.number || 0; 
-        return new Response(JSON.stringify({ likes: currentLikes }), { status: 200 }); 
-    } catch (error) { 
-        console.error(error); 
-        return new Response(JSON.stringify({ error: 'Failed to fetch likes' }), { status: 500 }); 
-    } 
-};
-
 const handler = async (req) => {
     const { id, action } = await req.json();
 
@@ -51,7 +38,38 @@ export const POST = async (req) => {
     response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io');
     response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    response.headers.set('Access-Control-Allow-Credentials', 'true'); 
+    response.headers.set('Access-Control-Allow-Credentials', 'true'); // Add this line
+
+    return response;
+};
+
+const getHandler = async (req) => {
+    const { id } = await req.json();
+
+    try {
+        const page = await notion.pages.retrieve({ page_id: id });
+        const currentLikes = page.properties["숫자"]?.number || 0;
+
+        const response = new Response(JSON.stringify({ likes: currentLikes }), { status: 200 });
+        response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io');
+        response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+        response.headers.set('Access-Control-Allow-Credentials', 'true');
+
+        return response;
+    } catch (error) {
+        console.error(error);
+        return new Response(JSON.stringify({ error: 'Failed to fetch likes' }), { status: 500 });
+    }
+};
+
+export const GET = async (req) => {
+    const response = await getHandler(req);
+
+    response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
 
     return response;
 };
@@ -61,17 +79,9 @@ export const OPTIONS = () => {
         status: 204,
         headers: {
             'Access-Control-Allow-Origin': 'https://numi8462.github.io',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Credentials': 'true', 
         },
     });
-};
-
-export const GET = async (req) => { 
-    const response = await getHandler(req); 
-    response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io'); 
-    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS'); 
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type'); 
-    response.headers.set('Access-Control-Allow-Credentials', 'true'); 
 };
