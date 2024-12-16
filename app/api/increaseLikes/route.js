@@ -2,7 +2,7 @@ import { Client } from '@notionhq/client';
 
 const notion = new Client({ auth: process.env.NOTION_ACCESS_TOKEN });
 
-export async function POST(req) {
+const handler = async (req) => {
     const { id, action } = await req.json();
 
     try {
@@ -30,4 +30,27 @@ export async function POST(req) {
         console.error(error);
         return new Response(JSON.stringify({ error: 'Failed to update likes' }), { status: 500 });
     }
-}
+};
+
+export const POST = async (req) => {
+    const response = await handler(req);
+
+    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    response.headers.set('Access-Control-Allow-Credentials', 'true'); // Add this line
+
+    return response;
+};
+
+export const OPTIONS = () => {
+    return new Response(null, {
+        status: 204,
+        headers: {
+            'Access-Control-Allow-Origin': 'http://localhost:3000',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Credentials': 'true', // Add this line
+        },
+    });
+};
