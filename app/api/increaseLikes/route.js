@@ -35,7 +35,7 @@ const handler = async (req) => {
 export const POST = async (req) => {
     const response = await handler(req);
 
-    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    response.headers.set('Access-Control-Allow-Origin', 'https://numi8462.github.io');
     response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
     response.headers.set('Access-Control-Allow-Credentials', 'true'); // Add this line
@@ -47,7 +47,7 @@ export const OPTIONS = () => {
     return new Response(null, {
         status: 204,
         headers: {
-            'Access-Control-Allow-Origin': 'http://localhost:3000',
+            'Access-Control-Allow-Origin': 'https://numi8462.github.io',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Credentials': 'true', // Add this line
